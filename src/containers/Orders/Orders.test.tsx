@@ -125,7 +125,9 @@ describe("<Orders />", () => {
 
     await waitFor(() => {
       const { totalOrders } = getSummaryOrders(mockOrders);
-      const summaryTotalOrders = screen.getAllByText(totalOrders);
+      const summaryTotalOrders = screen.getByTestId(
+        "summary-total-orders"
+      ).textContent;
       expect(summaryTotalOrders).toBe(totalOrders.toString());
     });
   });
