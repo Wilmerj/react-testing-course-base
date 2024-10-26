@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { SessionProvider, useSession } from "../../context/AuthContext";
 import { getOrders } from "../../services/getOrders";
+import { getSummaryOrders } from "../../utils/sumamry";
 import { Orders } from "./Orders";
 
 // 1. Mock del servicio de órdenes
@@ -113,8 +114,19 @@ describe("<Orders />", () => {
     renderOrders("visualizer");
 
     await waitFor(() => {
-      const orders = screen.getAllByRole('heading', { level: 3 });
+      const orders = screen.getAllByRole("heading", { level: 3 });
       expect(orders).toHaveLength(mockOrders.length);
+    });
+  });
+
+  it("renders OrderSummary for a superadmin", async () => {
+    mockGetOrders.mockResolvedValue(mockOrders);
+    renderOrders("superadmin");
+
+    await waitFor(() => {
+      const { totalOrders } = getSummaryOrders(mockOrders);
+      const summaryTotalOrders = screen.getAllByText(totalOrders);
+      expect(summaryTotalOrders).toBe(totalOrders.toString());
     });
   });
 });
