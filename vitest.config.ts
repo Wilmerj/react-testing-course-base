@@ -16,6 +16,9 @@ export default defineConfig({
         "**/App.tsx",
         "**/main.tsx",
       ],
+      thresholds: {
+        functions: 85
+      }
     },
   },
 });
