@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, Mock } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { SessionProvider } from "../../context/AuthContext";
 import { getAuth } from "../../services/getAuth";
@@ -40,7 +40,9 @@ describe("<Login />", () => {
     const buttonLogin = screen.getByRole("button", { name: "Login" });
     fireEvent.change(usernameInput, { target: { value: "invaliduser" } });
     fireEvent.change(passwordInput, { target: { value: "invalidpass" } });
-    fireEvent.click(buttonLogin);
+    await act(async () => {
+      fireEvent.click(buttonLogin);
+    });
     await waitFor(() => {
       const errorMessage = screen.getByText("Invalid username or password");
       expect(mockGetAuth).toHaveBeenCalledWith("invaliduser", "invalidpass");
@@ -56,9 +58,11 @@ describe("<Login />", () => {
       const passwordInput = screen.getByPlaceholderText(/password/i);
       const loginButton = screen.getByRole("button", { name: /login/i });
 
-      fireEvent.change(usernameInput, { target: { value: "validuser" } });
-      fireEvent.change(passwordInput, { target: { value: "validpass" } });
-      fireEvent.click(loginButton);
+      await act(async () => {
+        fireEvent.change(usernameInput, { target: { value: "validuser" } });
+        fireEvent.change(passwordInput, { target: { value: "validpass" } });
+        fireEvent.click(loginButton);
+      });
 
       await waitFor(() => {
         expect(mockGetAuth).toHaveBeenCalledWith("validuser", "validpass");
